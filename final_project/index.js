@@ -8,10 +8,24 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
+app.use("/customer",session({secret:"thebooksonthetable",resave: true, saveUninitialized: true}))
 
 app.use("/customer/auth/*", function auth(req,res,next){
-//Write the authenication mechanism here
+    const token = req.headers['authorization'];
+
+    if (!token) 
+        return res.status(401).json({ message: "Acceso denegado. No se proporcionó un token."});
+
+    try {
+            const decoded = jwt.verify(token.split(' ')[1], 'thebooksonthetable');
+
+            req.user = decoded;
+    
+            next();
+        } catch (ex) {
+            return res.status(401).json({ message: "Token inválido o expirado." });
+        }
+
 });
  
 const PORT =5000;
