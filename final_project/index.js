@@ -8,7 +8,11 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/customer",session({secret:"thebooksonthetable",resave: true, saveUninitialized: true}))
+app.use("/customer", session({
+    secret: "thebooksonthetable",
+    resave: true,
+    saveUninitialized: true,
+  }));
 
 app.use("/customer/auth/*", function auth(req,res,next){
     const token = req.headers['authorization'];
